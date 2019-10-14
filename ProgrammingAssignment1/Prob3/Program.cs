@@ -9,6 +9,7 @@ Module 2, Programming Assignment 1, Problem 3
 
 Create a program that prints out all the recommended actions based on these
 conditions: Printer prints, red light flashing, printer recognized by computer.
+Use one region for nested for loops and another for the switch statement.
 
  */
 
@@ -23,6 +24,186 @@ namespace Prob3
     // Class program: Where assignment code is written
     class Program
     {
+        /*
+        Method: Main
+        Input: An array of strings (commands)
+        Output: N/A
+        Behavior: Acts like a command line interface
+         */
+        static void Main(string[] args)
+        {
+            #region region 1 - nested for loops
+            Console.WriteLine("Printing actions - Nested for loops");
+            Console.WriteLine();
+            for (int i = 0; i < 2; i++)
+            {
+                for (int j = 0; j < 2; j++)
+                {
+                    for (int k = 0; k < 2; k++)
+                    {
+                        // Convert for loop counts to boolean conditions
+                        bool canPrint = i == 1 ? true : false;
+                        bool hasRedLight = j == 1 ? true : false;
+                        bool isRecognized = k == 1 ? true : false;
+
+                        // Print conditions
+                        Console.WriteLine("prints: {0}, flashing light: {1}, " +
+                            "printer recognized: {2}",
+                            canPrint, hasRedLight, isRecognized);
+
+                        // Conditions key: prints, red light flashes, computer recognizes
+                        // Conditions: NO, NO, NO
+                        if (!canPrint && !hasRedLight && !isRecognized)
+                        {
+                            ActionPowerCable();
+                            ActionComputerCable();
+                            ActionInstallSoftware();
+                        }
+
+                        // Conditions: NO, NO, YES
+                        if (!canPrint && !hasRedLight && isRecognized)
+                        {
+                            ActionPaperJam();
+                        }
+
+                        // Conditions: NO, YES, NO
+                        if (!canPrint && hasRedLight && !isRecognized)
+                        {
+                            ActionComputerCable();
+                            ActionInstallSoftware();
+                            ActionCheckInk();
+                        }
+
+                        // Conditions: NO, YES, YES
+                        if (!canPrint && hasRedLight && isRecognized)
+                        {
+                            ActionCheckInk();
+                            ActionPaperJam();
+                        }
+
+                        // Conditions: YES, NO, NO
+                        if (canPrint && !hasRedLight && !isRecognized)
+                        {
+                            ActionInstallSoftware();
+                        }
+
+                        // Conditions: YES, NO, YES
+                        if (canPrint && !hasRedLight && isRecognized)
+                        {
+                            Console.WriteLine("\tNo action required.");
+                        }
+
+                        // Conditions: YES, YES, NO
+                        if (canPrint && hasRedLight && !isRecognized)
+                        {
+                            ActionInstallSoftware();
+                        }
+
+                        // Conditions: YES, YES, YES
+                        if (canPrint && hasRedLight && isRecognized)
+                        {
+                            ActionCheckInk();
+                        }
+
+                        Console.WriteLine();
+                    }
+                }
+            }
+            #endregion
+
+            #region region 2 - switch
+            Console.BackgroundColor = ConsoleColor.DarkBlue;
+            Console.WriteLine("Printing actions - Switch statement");
+            Console.WriteLine();
+
+            // Iterate through possible condition combinations to summarize
+            // necessary actions.
+            for (int i = 0; i < 8; i++)
+            {
+                // Boolean conditions will be represented as digits in an
+                // imaginary binary number.
+
+                // Variables
+                int j = i;
+                bool canPrint = false;
+                bool hasRedLight = false;
+                bool isRecognized = false;
+
+                // 100 is binary for 4, first digit represents if printer can
+                // print.
+                if (j >= 4)
+                {
+                    canPrint = true;
+                    j -= 4;
+                }
+
+                // 010 is binary for 2, second digit represents if red light
+                // is flashing.
+                if (j >= 2)
+                {
+                    hasRedLight = true;
+                    j -= 2;
+                }
+
+                // 001 is binary for 1, third digit represents if computer
+                // can recognize printer.
+                if (j >= 1)
+                {
+                    isRecognized = true;
+                    j -= 1;
+                }
+
+                // Print conditions
+                Console.WriteLine("prints: {0}, flashing light: {1}, " +
+                            "printer recognized: {2}",
+                            canPrint, hasRedLight, isRecognized);
+
+                // Conditions key: prints, red light flashes, computer recognizes
+                switch (i) {
+                    // Conditions: NO, NO, NO
+                    case 0:
+                        ActionPowerCable();
+                        ActionComputerCable();
+                        ActionInstallSoftware();
+                        break;
+                    // Conditions: NO, NO, YES
+                    case 1:
+                        ActionPaperJam();
+                        break;
+                    // Conditions: NO, YES, NO
+                    case 2:
+                        ActionComputerCable();
+                        ActionInstallSoftware();
+                        ActionCheckInk();
+                        break;
+                    // Conditions: NO, YES, YES
+                    case 3:
+                        ActionCheckInk();
+                        ActionPaperJam();
+                        break;
+                    // Conditions: YES, NO, NO
+                    case 4:
+                        ActionInstallSoftware();
+                        break;
+                    // Conditions: YES, NO, YES
+                    case 5:
+                        Console.WriteLine("\tNo action required.");
+                        break;
+                    // Conditions: YES, YES, NO
+                    case 6:
+                        ActionInstallSoftware();
+                        break;
+                    // Conditions: YES, YES, YES
+                    case 7:
+                        ActionCheckInk();
+                        break;
+                }
+                Console.WriteLine();
+            }
+            Console.BackgroundColor = ConsoleColor.Black;
+            #endregion
+        }
+
         /*
         Method: ActionPowerCable
         Input: N/A
@@ -78,150 +259,6 @@ namespace Prob3
         static void ActionPaperJam()
         {
             Console.WriteLine("\tCheck for paper jam.");
-        }
-
-        /*
-        Method: Main
-        Input: An array of strings (commands)
-        Output: N/A
-        Behavior: Acts like a command line interface
-         */
-        static void Main(string[] args)
-        {
-            #region region 1 - print conditions
-            /*
-            Method: PrintConditions
-            Input: Three booleans, canPrint, hasRedLight, isRecognizable
-            Output: Prints conditions of if:
-                1. The printer can print
-                2. The printer has a red light flashing
-                3. The printer is recognized by the computer
-            Behavior: Takes the input of the three booleans and arranges
-                conditions into a single printed line
-             */                                                             
-            void PrintConditions(bool canPrint, bool hasRedLight, bool isRecognizable)
-            {
-                // Check if printer can print
-                Console.Write("prints: ");
-                if (canPrint)
-                {
-                    Console.Write(true);
-                } else
-                {
-                    Console.Write(false);
-                }
-
-                // Check if red light is flashing
-                Console.Write(", red light: ");
-                if (hasRedLight)
-                {
-                    Console.Write(true);
-                }
-                else
-                {
-                    Console.Write(false);
-                }
-
-                // Check if printer is recognized
-                Console.Write(", printer recognized: ");
-                if (isRecognizable)
-                {
-                    Console.Write(true);
-                }
-                else
-                {
-                    Console.Write(false);
-                }
-
-                Console.WriteLine();
-            }
-            #endregion
-
-            #region region 2 - print actions
-            // Iterate through possible condition combinations to summarize
-            // necessary actions.
-            for (int i = 0; i < 8; i++)
-            {
-                // Conditions key: prints, red light flashes, computer recognizes
-                switch (i) {
-                    // Conditions: NO, NO, NO
-                    case 0:
-                        PrintConditions(false, false, false);
-
-                        ActionPowerCable();
-                        ActionComputerCable();
-                        ActionInstallSoftware();
-
-                        Console.WriteLine();
-                        break;
-                    // Conditions: NO, NO, YES
-                    case 1:
-                        PrintConditions(false, false, true);
-
-                        ActionPaperJam();
-
-                        Console.WriteLine();
-                        break;
-                    // Conditions: NO, YES, NO
-                    case 2:
-                        PrintConditions(false, true, false);
-
-                        ActionComputerCable();
-                        ActionInstallSoftware();
-                        ActionCheckInk();
-
-                        Console.WriteLine();
-                        break;
-                    // Conditions: NO, YES, YES
-                    case 3:
-                        PrintConditions(false, true, true);
-
-                        ActionCheckInk();
-                        ActionPaperJam();
-
-                        Console.WriteLine();
-                        break;
-                    // Conditions: YES, NO, NO
-                    case 4:
-                        PrintConditions(true, false, false);
-
-                        ActionInstallSoftware();
-
-                        Console.WriteLine();
-                        break;
-                    // Conditions: YES, NO, YES
-                    case 5:
-                        PrintConditions(true, false, true);
-
-                        Console.WriteLine("\tNo action required.");
-
-                        Console.WriteLine();
-                        break;
-                    // Conditions: YES, YES, NO
-                    case 6:
-                        PrintConditions(true, true, false);
-
-                        ActionInstallSoftware();
-
-                        Console.WriteLine();
-                        break;
-                    // Conditions: YES, YES, YES
-                    case 7:
-                        PrintConditions(true, true, true);
-
-                        ActionCheckInk();
-
-                        Console.WriteLine();
-                        break;
-                    // Obligatory default
-                    default:
-                        Console.WriteLine("\tNo action required.");
-
-                        Console.WriteLine();
-                        break;
-                }
-            }
-            #endregion
         }
     }
 }
